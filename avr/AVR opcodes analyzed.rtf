@@ -1,0 +1,422 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1046{\fonttbl{\f0\fswiss\fcharset0 Arial;}{\f1\fmodern\fprq1\fcharset0 Courier New;}}
+{\*\generator Msftedit 5.41.15.1507;}\viewkind4\uc1\pard\f0\fs20  \f1 AVR opcodes analyzed\par
+In this first section I give an overview of opcodes and mnemonics for the Atmel AVR (8 bit family) of microcontrollers. For a later project, I need to know how the instruction set is built up and encoded in executables.\par
+\par
+To do this, I entered the mnemonics and the binary patterns that identify each one of them in a text file and then resorted the file, based on the opcode. This yielded a list with the NOP in top and all other instructions following it. The list shows that\par
+\par
+    * there seem to be duplicate instructions\par
+    * some opcodes do not follow the mnemonic format\par
+    * some instructions are simply not there\par
+    * there are some more mnemonics than strictly necessary\par
+\par
+The list with mnemonics and opcodes\par
+Through the internet I found document "0865E-AVR-11/05 'Atmel 8 bit AVR instruction set'" as a PDF file. From it, I made the following list:\par
+\par
+adc\tab\tab : 0 0 0 1 1 1\par
+add\tab\tab : 0 0 0 0 1 1\par
+adiw\tab\tab : 1 0 0 1 0 1 1 0\par
+and\tab\tab : 0 0 1 0 0 0\par
+andi\tab\tab : 0 1 1 1\par
+asr\tab\tab : 1 0 0 1 0 1 0           0 1 0 1\par
+bclr\tab\tab : 1 0 0 1 0 1 0 0 1       1 0 0 0\par
+bld\tab\tab : 1 1 1 1 1 0 0 \tab   0\par
+brbc\tab\tab : 1 1 1 1 0 1\par
+brbs\tab\tab : 1 1 1 1 0 0\par
+brcc\tab\tab : 1 1 1 1 0 1               0 0 0\par
+brcs\tab\tab : 1 1 1 1 0 0               0 0 0\par
+break\tab\tab : 1 0 0 1 0 1 0 1 1 0 0 1 1 0 0 0\par
+breq\tab\tab : 1 1 1 1 0 0               0 0 1\par
+brge\tab\tab : 1 1 1 1 0 1               1 0 0\par
+brhc\tab\tab : 1 1 1 1 0 1               1 0 1\par
+brhs\tab\tab : 1 1 1 1 0 0               1 0 1\par
+brid\tab\tab : 1 1 1 1 0 1               1 1 1\par
+brie\tab\tab : 1 1 1 1 0 0               1 1 1\par
+brlo\tab\tab : 1 1 1 1 0 0               0 0 0\par
+brlt\tab\tab : 1 1 1 1 0 0               1 0 0\par
+brmi\tab\tab : 1 1 1 1 0 0               0 1 0\par
+brne\tab\tab : 1 1 1 1 0 1               0 0 1\par
+brpl\tab\tab : 1 1 1 1 0 1               0 1 0\par
+brsh\tab\tab : 1 1 1 1 0 1               0 0 0\par
+brtc\tab\tab : 1 1 1 1 0 1               1 1 0\par
+brts\tab\tab : 1 1 1 1 0 0               1 1 0\par
+brvc\tab\tab : 1 1 1 1 0 1               0 1 1\par
+brvs\tab\tab : 1 1 1 1 0 0               0 1 1\par
+bset\tab\tab : 1 0 0 1 0 1 0 0 0       1 0 0 0\par
+bst\tab\tab : 1 1 1 1 1 0 1           0\par
+call\tab\tab : 1 0 0 1 0 1 0           1 1 1\par
+cbi\tab\tab : 1 0 0 1 1 0 0 0\par
+cbr\tab\tab : 0 1 1 1\par
+clc\tab\tab : 1 0 0 1 0 1 0 0 1 0 0 0 1 0 0 0\par
+clh\tab\tab : 1 0 0 1 0 1 0 0 1 1 0 1 1 0 0 0\par
+cli\tab\tab : 1 0 0 1 0 1 0 0 1 1 1 1 1 0 0 0\par
+cln\tab\tab : 1 0 0 1 0 1 0 0 1 0 1 0 1 0 0 0\par
+clr\tab\tab : 0 0 1 0 0 1\par
+cls\tab\tab : 1 0 0 1 0 1 0 0 1 1 0 0 1 0 0 0\par
+clt\tab\tab : 1 0 0 1 0 1 0 0 1 1 1 0 1 0 0 0\par
+clv\tab\tab : 1 0 0 1 0 1 0 0 1 0 1 1 1 0 0 0\par
+clz\tab\tab : 1 0 0 1 0 1 0 0 1 0 0 1 1 0 0 0\par
+com\tab\tab : 1 0 0 1 0 1 0           0 0 0 0\par
+cp\tab\tab : 0 0 0 1 0 1\par
+cpc\tab\tab : 0 0 0 0 0 1\par
+cpi\tab\tab : 0 0 1 1\par
+cpse\tab\tab : 0 0 0 1 0 0\par
+dec\tab\tab : 1 0 0 1 0 1 0           1 0 1 0\par
+eicall\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 1 1 0 0 1\par
+eijmp\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 1 1 0 0 1\par
+elpm R0\tab\tab : 1 0 0 1 0 1 0 1 1 1 0 1 1 0 0 0\par
+elpm Rd\tab\tab : 1 0 0 1 0 0 0           0 1 1 0\par
+elpm rd, Z\tab : 1 0 0 1 0 0 0           0 1 1 1\par
+eor  \tab  \tab : 0 0 1 0 0 1\par
+fmul\tab\tab : 0 0 0 0 0 0 1 1 0       1\par
+fmuls\tab\tab : 0 0 0 0 0 0 1 1 1       0\par
+fmulsu\tab\tab : 0 0 0 0 0 0 1 1 1       1\par
+icall\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 0 1 0 0 1\par
+ijmp\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 0 1 0 0 1\par
+in\tab\tab : 1 0 1 1 0\par
+inc\tab\tab : 1 0 0 1 0 1 0           0 0 1 1\par
+jmp\tab\tab : 1 0 0 1 0 1 0           1 1 0\par
+ld Rd, x\tab : 1 0 0 1 0 0 0           1 1 0 0\par
+ld Rd, X+\tab : 1 0 0 1 0 0 0           1 1 0 1\par
+ld Rd, -X\tab : 1 0 0 1 0 0 0           1 1 1 0\par
+ld Rd, Y\tab : 1 0 0 0 0 0 0           1 0 0 0\par
+ld Rd, Y+\tab : 1 0 0 1 0 0 0           1 0 0 1\par
+ld Rd, -Y\tab : 1 0 0 1 0 0 0           1 0 1 0\par
+ldd Rd, Y+q\tab : 1 0   0     0           1\par
+ld Rd, Z\tab : 1 0 0 0 0 0 0           0 0 0 0\par
+ld Rd, Z+\tab : 1 0 0 1 0 0 0           0 0 0 1\par
+ld Rd, -Z\tab : 1 0 0 1 0 0 0           0 0 1 0\par
+ldd Rd, Z+q\tab : 1 0   0     0           0\par
+ldi \tab\tab : 1 1 1 0\par
+lds\tab\tab : 1 0 0 1 0 0 0           0 0 0 0\par
+lpm R0, Z\tab : 1 0 0 1 0 1 0 1 1 1 0 0 1 0 0 0\par
+lpm Rd, Z\tab : 1 0 0 1 0 0 0           0 1 0 0\par
+lpm Rd, Z+\tab : 1 0 0 1 0 0 0           0 1 0 1\par
+lsl \tab\tab : 0 0 0 0 1 1\par
+lsr\tab\tab : 1 0 0 1 0 1 0           0 1 1 0\par
+mov\tab\tab : 0 0 1 0 1 1\par
+movw\tab\tab : 0 0 0 0 0 0 0 1\par
+mul\tab\tab : 1 0 0 1 1 1\par
+muls\tab\tab : 0 0 0 0 0 0 1 0\par
+mulsu\tab\tab : 0 0 0 0 0 0 1 1 0       0\par
+neg\tab\tab : 1 0 0 1 0 1 0           0 0 0 1\par
+nop\tab\tab : 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\par
+or\tab\tab : 0 0 1 0 1 0\par
+ori\tab\tab : 0 1 1 0\par
+out\tab\tab : 1 0 1 1 1\par
+pop\tab\tab : 1 0 0 1 0 0 0           1 1 1 1\par
+push\tab\tab : 1 0 0 1 0 0 1           1 1 1 1\par
+rcall\tab\tab : 1 1 0 1\par
+ret\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 0 1 0 0 0\par
+reti\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 1 1 0 0 0\par
+rjmp\tab\tab : 1 1 0 0\par
+rol\tab\tab : 0 0 0 1 1 1\par
+ror\tab\tab : 1 0 0 1 0 1 0           0 1 1 1\par
+sbc\tab\tab : 0 0 0 0 1 0\par
+sbci\tab\tab : 0 1 0 0\par
+sbi\tab\tab : 1 0 0 1 1 0 1 0\par
+sbic\tab\tab : 1 0 0 1 1 0 0 1\par
+sbis\tab\tab : 1 0 0 1 1 0 1 1\par
+sbiw\tab\tab : 1 0 0 1 0 1 1 1\par
+sbr\tab\tab : 0 1 1 0\par
+sbrc\tab\tab : 1 1 1 1 1 1 0           0\par
+sbrs\tab\tab : 1 1 1 1 1 1 1           0\par
+sec\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0\par
+seh\tab\tab : 1 0 0 1 0 1 0 0 0 1 0 1 1 0 0 0\par
+sei\tab\tab : 1 0 0 1 0 1 0 0 0 1 1 1 1 0 0 0\par
+sen\tab\tab : 1 0 0 1 0 1 0 0 0 0 1 0 1 0 0 0\par
+ser\tab\tab : 1 1 1 0 1 1 1 1         1 1 1 1\par
+ses\tab\tab : 1 0 0 1 0 1 0 0 0 1 0 0 1 0 0 0\par
+set\tab\tab : 1 0 0 1 0 1 0 0 0 1 1 0 1 0 0 0\par
+sev\tab\tab : 1 0 0 1 0 1 0 0 0 0 1 1 1 0 0 0\par
+sez\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 1 1 0 0 0\par
+sleep\tab\tab : 1 0 0 1 0 1 0 1 1 0 0 0 1 0 0 0\par
+spm\tab\tab : 1 0 0 1 0 1 0 1 1 1 1 0 1 0 0 0\par
+st X, R\tab\tab : 1 0 0 1 0 0 1           1 1 0 0\par
+st X+, R\tab : 1 0 0 1 0 0 1           1 1 0 1\par
+st -X, R\tab : 1 0 0 1 0 0 1           1 1 1 0\par
+st Y, R\tab\tab : 1 0 0 0 0 0 1           1 0 0 0\par
+st Y+, R\tab : 1 0 0 1 0 0 1           1 0 0 1\par
+st -Y, R\tab : 1 0 0 1 0 0 1           1 0 1 0\par
+std Y+q, R\tab : 1 0   0     1           1\par
+st Z, R\tab  \tab : 1 0 0 0 0 0 1           0 0 0 0\par
+st Z+, R\tab : 1 0 0 1 0 0 1           0 0 0 1\par
+st -Z, R\tab : 1 0 0 1 0 0 1           0 0 1 0\par
+std Z+q, R\tab : 1 0   0     1           0\par
+sts \tab  \tab : 1 0 0 1 0 0 1           0 0 0 0\par
+sub\tab\tab : 0 0 0 1 1 0\par
+subi\tab\tab : 0 1 0 1\par
+swap\tab\tab : 1 0 0 1 0 1 0           0 0 1 0\par
+tst\tab\tab : 0 0 1 0 0 0\par
+wdr\tab\tab : 1 0 0 1 0 1 0 1 1 0 1 0 1 0 0 0\par
+\par
+The 'holes' in the list represent the places where addresses of registers and flags must be inserted. I could have entered the 'rrrrr' and 'ddddd' from the Atmel documentation but that would have rendered the file practically unreadable.\par
+Mnemonics sorted by opcode\par
+I resorted the file with the Unix 'sort' filter as follows:\par
+\par
+     sort opcodes --key=2 -t ':' >numcodes\par
+\par
+which resulted in the following list:\par
+\par
+      \par
+nop\tab\tab : 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\par
+movw\tab\tab : 0 0 0 0 0 0 0 1\par
+muls\tab\tab : 0 0 0 0 0 0 1 0\par
+mulsu\tab\tab : 0 0 0 0 0 0 1 1 0       0\par
+fmul\tab\tab : 0 0 0 0 0 0 1 1 0       1\par
+fmuls\tab\tab : 0 0 0 0 0 0 1 1 1       0\par
+fmulsu\tab\tab : 0 0 0 0 0 0 1 1 1       1\par
+cpc\tab\tab : 0 0 0 0 0 1\par
+sbc\tab\tab : 0 0 0 0 1 0\par
+add\tab\tab : 0 0 0 0 1 1\par
+lsl \tab\tab : 0 0 0 0 1 1\par
+cpse\tab\tab : 0 0 0 1 0 0\par
+cp\tab\tab : 0 0 0 1 0 1\par
+sub\tab\tab : 0 0 0 1 1 0\par
+adc\tab\tab : 0 0 0 1 1 1\par
+rol\tab\tab : 0 0 0 1 1 1\par
+and\tab\tab : 0 0 1 0 0 0\par
+tst\tab\tab : 0 0 1 0 0 0\par
+clr\tab\tab : 0 0 1 0 0 1\par
+eor  \tab  \tab : 0 0 1 0 0 1\par
+or\tab\tab : 0 0 1 0 1 0\par
+mov\tab\tab : 0 0 1 0 1 1\par
+cpi\tab\tab : 0 0 1 1\par
+sbci\tab\tab : 0 1 0 0\par
+subi\tab\tab : 0 1 0 1\par
+ori\tab\tab : 0 1 1 0\par
+sbr\tab\tab : 0 1 1 0\par
+andi\tab\tab : 0 1 1 1\par
+cbr\tab\tab : 0 1 1 1\par
+ldd Rd, Z+q\tab : 1 0   0     0           0\par
+ldd Rd, Y+q\tab : 1 0   0     0           1\par
+std Z+q, R\tab : 1 0   0     1           0\par
+std Y+q, R\tab : 1 0   0     1           1\par
+ld Rd, Z\tab : 1 0 0 0 0 0 0           0 0 0 0\par
+ld Rd, Y\tab : 1 0 0 0 0 0 0           1 0 0 0\par
+st Z, R\tab  \tab : 1 0 0 0 0 0 1           0 0 0 0\par
+st Y, R\tab\tab : 1 0 0 0 0 0 1           1 0 0 0\par
+lds\tab\tab : 1 0 0 1 0 0 0           0 0 0 0\par
+ld Rd, Z+\tab : 1 0 0 1 0 0 0           0 0 0 1\par
+ld Rd, -Z\tab : 1 0 0 1 0 0 0           0 0 1 0\par
+lpm Rd, Z\tab : 1 0 0 1 0 0 0           0 1 0 0\par
+lpm Rd, Z+\tab : 1 0 0 1 0 0 0           0 1 0 1\par
+elpm Rd\tab\tab : 1 0 0 1 0 0 0           0 1 1 0\par
+elpm rd, Z\tab : 1 0 0 1 0 0 0           0 1 1 1\par
+ld Rd, Y+\tab : 1 0 0 1 0 0 0           1 0 0 1\par
+ld Rd, -Y\tab : 1 0 0 1 0 0 0           1 0 1 0\par
+ld Rd, x\tab : 1 0 0 1 0 0 0           1 1 0 0\par
+ld Rd, X+\tab : 1 0 0 1 0 0 0           1 1 0 1\par
+ld Rd, -X\tab : 1 0 0 1 0 0 0           1 1 1 0\par
+pop\tab\tab : 1 0 0 1 0 0 0           1 1 1 1\par
+sts \tab  \tab : 1 0 0 1 0 0 1           0 0 0 0\par
+st Z+, R\tab : 1 0 0 1 0 0 1           0 0 0 1\par
+st -Z, R\tab : 1 0 0 1 0 0 1           0 0 1 0\par
+st Y+, R\tab : 1 0 0 1 0 0 1           1 0 0 1\par
+st -Y, R\tab : 1 0 0 1 0 0 1           1 0 1 0\par
+st X, R\tab\tab : 1 0 0 1 0 0 1           1 1 0 0\par
+st X+, R\tab : 1 0 0 1 0 0 1           1 1 0 1\par
+st -X, R\tab : 1 0 0 1 0 0 1           1 1 1 0\par
+push\tab\tab : 1 0 0 1 0 0 1           1 1 1 1\par
+com\tab\tab : 1 0 0 1 0 1 0           0 0 0 0\par
+neg\tab\tab : 1 0 0 1 0 1 0           0 0 0 1\par
+swap\tab\tab : 1 0 0 1 0 1 0           0 0 1 0\par
+inc\tab\tab : 1 0 0 1 0 1 0           0 0 1 1\par
+asr\tab\tab : 1 0 0 1 0 1 0           0 1 0 1\par
+lsr\tab\tab : 1 0 0 1 0 1 0           0 1 1 0\par
+ror\tab\tab : 1 0 0 1 0 1 0           0 1 1 1\par
+dec\tab\tab : 1 0 0 1 0 1 0           1 0 1 0\par
+jmp\tab\tab : 1 0 0 1 0 1 0           1 1 0\par
+call\tab\tab : 1 0 0 1 0 1 0           1 1 1\par
+bset\tab\tab : 1 0 0 1 0 1 0 0 0       1 0 0 0\par
+sec\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0\par
+ijmp\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 0 1 0 0 1\par
+sez\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 1 1 0 0 0\par
+eijmp\tab\tab : 1 0 0 1 0 1 0 0 0 0 0 1 1 0 0 1\par
+sen\tab\tab : 1 0 0 1 0 1 0 0 0 0 1 0 1 0 0 0\par
+sev\tab\tab : 1 0 0 1 0 1 0 0 0 0 1 1 1 0 0 0\par
+ses\tab\tab : 1 0 0 1 0 1 0 0 0 1 0 0 1 0 0 0\par
+seh\tab\tab : 1 0 0 1 0 1 0 0 0 1 0 1 1 0 0 0\par
+set\tab\tab : 1 0 0 1 0 1 0 0 0 1 1 0 1 0 0 0\par
+sei\tab\tab : 1 0 0 1 0 1 0 0 0 1 1 1 1 0 0 0\par
+bclr\tab\tab : 1 0 0 1 0 1 0 0 1       1 0 0 0\par
+clc\tab\tab : 1 0 0 1 0 1 0 0 1 0 0 0 1 0 0 0\par
+clz\tab\tab : 1 0 0 1 0 1 0 0 1 0 0 1 1 0 0 0\par
+cln\tab\tab : 1 0 0 1 0 1 0 0 1 0 1 0 1 0 0 0\par
+clv\tab\tab : 1 0 0 1 0 1 0 0 1 0 1 1 1 0 0 0\par
+cls\tab\tab : 1 0 0 1 0 1 0 0 1 1 0 0 1 0 0 0\par
+clh\tab\tab : 1 0 0 1 0 1 0 0 1 1 0 1 1 0 0 0\par
+clt\tab\tab : 1 0 0 1 0 1 0 0 1 1 1 0 1 0 0 0\par
+cli\tab\tab : 1 0 0 1 0 1 0 0 1 1 1 1 1 0 0 0\par
+ret\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 0 1 0 0 0\par
+icall\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 0 1 0 0 1\par
+reti\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 1 1 0 0 0\par
+eicall\tab\tab : 1 0 0 1 0 1 0 1 0 0 0 1 1 0 0 1\par
+sleep\tab\tab : 1 0 0 1 0 1 0 1 1 0 0 0 1 0 0 0\par
+break\tab\tab : 1 0 0 1 0 1 0 1 1 0 0 1 1 0 0 0\par
+wdr\tab\tab : 1 0 0 1 0 1 0 1 1 0 1 0 1 0 0 0\par
+lpm R0, Z\tab : 1 0 0 1 0 1 0 1 1 1 0 0 1 0 0 0\par
+elpm R0\tab\tab : 1 0 0 1 0 1 0 1 1 1 0 1 1 0 0 0\par
+spm\tab\tab : 1 0 0 1 0 1 0 1 1 1 1 0 1 0 0 0\par
+adiw\tab\tab : 1 0 0 1 0 1 1 0\par
+sbiw\tab\tab : 1 0 0 1 0 1 1 1\par
+cbi\tab\tab : 1 0 0 1 1 0 0 0\par
+sbic\tab\tab : 1 0 0 1 1 0 0 1\par
+sbi\tab\tab : 1 0 0 1 1 0 1 0\par
+sbis\tab\tab : 1 0 0 1 1 0 1 1\par
+mul\tab\tab : 1 0 0 1 1 1\par
+in\tab\tab : 1 0 1 1 0\par
+out\tab\tab : 1 0 1 1 1\par
+rjmp\tab\tab : 1 1 0 0\par
+rcall\tab\tab : 1 1 0 1\par
+ldi \tab\tab : 1 1 1 0\par
+ser\tab\tab : 1 1 1 0 1 1 1 1         1 1 1 1\par
+brbs\tab\tab : 1 1 1 1 0 0\par
+brcs\tab\tab : 1 1 1 1 0 0               0 0 0\par
+brlo\tab\tab : 1 1 1 1 0 0               0 0 0\par
+breq\tab\tab : 1 1 1 1 0 0               0 0 1\par
+brmi\tab\tab : 1 1 1 1 0 0               0 1 0\par
+brvs\tab\tab : 1 1 1 1 0 0               0 1 1\par
+brlt\tab\tab : 1 1 1 1 0 0               1 0 0\par
+brhs\tab\tab : 1 1 1 1 0 0               1 0 1\par
+brts\tab\tab : 1 1 1 1 0 0               1 1 0\par
+brie\tab\tab : 1 1 1 1 0 0               1 1 1\par
+brbc\tab\tab : 1 1 1 1 0 1\par
+brcc\tab\tab : 1 1 1 1 0 1               0 0 0\par
+brsh\tab\tab : 1 1 1 1 0 1               0 0 0\par
+brne\tab\tab : 1 1 1 1 0 1               0 0 1\par
+brpl\tab\tab : 1 1 1 1 0 1               0 1 0\par
+brvc\tab\tab : 1 1 1 1 0 1               0 1 1\par
+brge\tab\tab : 1 1 1 1 0 1               1 0 0\par
+brhc\tab\tab : 1 1 1 1 0 1               1 0 1\par
+brtc\tab\tab : 1 1 1 1 0 1               1 1 0\par
+brid\tab\tab : 1 1 1 1 0 1               1 1 1\par
+bld\tab\tab : 1 1 1 1 1 0 0 \tab   0\par
+bst\tab\tab : 1 1 1 1 1 0 1           0\par
+sbrc\tab\tab : 1 1 1 1 1 1 0           0\par
+sbrs\tab\tab : 1 1 1 1 1 1 1           0\par
+\par
+Observations\par
+Look at this:\par
+\par
+      \par
+    clr     : 0 0 1 0 0 1\par
+    eor     : 0 0 1 0 0 1\par
+\par
+It seems that the CLR and EOR instructions have identical opcodes. When we go check the datasheet, we see that CLR uses a 5 bit register address, but there are 10 bits to be filled in. The EOR on the other hand, needs two groups of 5 bits:\par
+\par
+      \par
+    eor     : 0 0 1 0 0 1 r d d d d d r r r r\par
+\par
+in which 'rrrrr' and 'ddddd' are 5 bit addresses. So if you use identical numbers for 'rrrrr' and 'ddddd', you get\par
+\par
+    eor   Rx, Rx\par
+\par
+which boils down to\par
+\par
+    clr   Rx\par
+\par
+Apparently you just need to know this, since without this knowledge, you cannot compose the 10 bit register address of the CLR instruction.\par
+\par
+Another strange example:\par
+\par
+    add    : 0 0 0 0 1 1\par
+    lsl    : 0 0 0 0 1 1\par
+\par
+It turns out, that the LSL (Logical Shift Left) is composed of an 'ADD Rx, Rx' instruction. Which is a bit of a disappointment since shifting is considered more efficient than adding. So take care with building the opcodes for the LSL instruction since it needs two times the same (but scrambled) 5 bit addressfield.\par
+\par
+    adc    : 0 0 0 1 1 1\par
+    rol    : 0 0 0 1 1 1\par
+\par
+Yet another trick. ROL shifts left the involved number and then copies the Carry flag into the LSB. Which, if you think of it carefully, is identical to\par
+\par
+    ADC   Rx, Rx\par
+\par
+Of course with the same addressing trick. Neat.\par
+\par
+    and    : 0 0 1 0 0 0\par
+    tst    : 0 0 1 0 0 0\par
+\par
+Anding a register with itself is identical to performing a TST. Yet another trick of the Atmel engineers. Just to spoil us. I wonder how many more monkeys they have up their sleeves.\par
+\par
+Two more examples: 'OR Immediate' versus 'Set Bits in Register' and 'AND Immediate' versus 'Clear Bits in Register':\par
+\par
+    ori    : 0 1 1 0\par
+    sbr    : 0 1 1 0\par
+    andi   : 0 1 1 1\par
+    cbr    : 0 1 1 1\par
+\par
+The seasoned programmers among us will get another 'Aha!' experience. Of course an ORI is the same as an SBR since you use the OR instruction (or logical gate) to force bits to a '1' position. And when you want to clear bits, you AND them with a complemented '1' (aka a '0'). Hence the relation between ANDI and CBR.\par
+From this, I must conclude that the CBR instruction effectively is a standard macro of the AVR assembler. You cannot find out which one was intended by the the programmer just by looking at the opcode. You can guess, but not more than that.\par
+\par
+Here's a more peculiar one:\par
+\par
+    bset   : 1 0 0 1 0 1 0 0 0       1 0 0 0\par
+    sec    : 1 0 0 1 0 1 0 0 0 0 0 0 1 0 0 0\par
+\par
+The bset (Bit SET in status register) instruction can set bits in the flags register. It has a three bit hole in the third nibble from the left. The 8 bits of the flags register are addressed as follows:\par
+\par
+    I    1 1 1\par
+    T    1 1 0\par
+    H    1 0 1\par
+    S    1 0 0\par
+    V    0 1 1\par
+    N    0 1 0\par
+    Z    0 0 1\par
+    C    0 0 0\par
+\par
+so if we insert the code for the Carry flag in the Bset mnemonic we get the opcode for the 'sec' (SEt Carry flag) instruction.\par
+\par
+Here's more of the same. You can figure out how it's done:\par
+\par
+    bclr   : 1 0 0 1 0 1 0 0 1       1 0 0 0\par
+    clc    : 1 0 0 1 0 1 0 0 1 0 0 0 1 0 0 0\par
+    clz    : 1 0 0 1 0 1 0 0 1 0 0 1 1 0 0 0\par
+    cln    : 1 0 0 1 0 1 0 0 1 0 1 0 1 0 0 0\par
+    clv    : 1 0 0 1 0 1 0 0 1 0 1 1 1 0 0 0\par
+    cls    : 1 0 0 1 0 1 0 0 1 1 0 0 1 0 0 0\par
+    clh    : 1 0 0 1 0 1 0 0 1 1 0 1 1 0 0 0\par
+    clt    : 1 0 0 1 0 1 0 0 1 1 1 0 1 0 0 0\par
+    cli    : 1 0 0 1 0 1 0 0 1 1 1 1 1 0 0 0\par
+\par
+Something similar with the 'brbs' instruction (BRanch if Bit in flags register is Set).\par
+\par
+    brbs   : 1 1 1 1 0 0\par
+    brcs   : 1 1 1 1 0 0               0 0 0\par
+    brlo   : 1 1 1 1 0 0               0 0 0\par
+    breq   : 1 1 1 1 0 0               0 0 1\par
+    brmi   : 1 1 1 1 0 0               0 1 0\par
+    brvs   : 1 1 1 1 0 0               0 1 1\par
+    brlt   : 1 1 1 1 0 0               1 0 0\par
+    brhs   : 1 1 1 1 0 0               1 0 1\par
+    brts   : 1 1 1 1 0 0               1 1 0\par
+    brie   : 1 1 1 1 0 0               1 1 1\par
+\par
+As you can see, BRCS (BRanch on Carryflag Set) is identical to BRLO (BRanch on LOwer). Which is logical since 'A lower than B' will always lead to a set carry flag after the operation 'A - B'.\par
+\par
+The next one is almost identical to the BRBS case. BRBC is short for 'BRanch if Bit in flagsregister is Cleared':\par
+\par
+    brbc   : 1 1 1 1 0 1\par
+    brcc   : 1 1 1 1 0 1               0 0 0\par
+    brsh   : 1 1 1 1 0 1               0 0 0\par
+\par
+Here we have the brcc (BRanch on Carryflag Cleared) versus the brsh (BRanch if Same or Higher).\par
+\par
+Another example:\par
+\par
+    ldd    Rd, Z + q    : 1 0 d 0 d d 0           0 d d d\par
+    ld     Rd, Z        : 1 0 0 0 0 0 0           0 0 0 0\par
+\par
+I entered the encoding of the displacement 'q' with the letters 'd' in the ldd instruction. It is totally obvious that the ld instruction is just a special case of the ldd.\par
+\par
+And one last one, that slipped my inspection in the first place:\par
+\par
+    ldi    : 1 1 1 0\par
+    ser    : 1 1 1 0 1 1 1 1         1 1 1 1\par
+\par
+ldi is short for LoaD Immediate and ser is SEt all bits in Register. So, ser loads the value FF into the register. See something funny here? The ser is a special case of the ldi instruction. Ser is ldi with the FF built-in...\par
+Conclusions\par
+There are quite some doubled instructions in the AVR instruction set. It can be nice to have two ways of writing for the same opcode, but it may also be confusing, since without a breakdown of the instructionset it is not very logical to assume that two (sometimes rather) diverse mnemonics do exactly the same.\par
+Page created on 5 September 2006 and last revised on 01/05/2008 19:31:33\par
+This page located at http://verhoeven272.nl/fruttenboel/AVR/opcodes.html\par
+}
+ 
